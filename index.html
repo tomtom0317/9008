@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>戦国47 天下統一・偉人編</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:rgba(0,0,0,0)}
+html,body{margin:0;padding:0;background:#1e140d;color:#fff7e6;font-family:Arial,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif}
+.wrap{max-width:760px;margin:auto;padding:7px}.panel{background:#2d1d13;border:3px solid #876437;border-radius:14px;padding:9px;box-shadow:0 6px 20px #0008}
+h1{text-align:center;color:#ffd76a;font-size:28px;margin:2px 0 4px;text-shadow:2px 2px #5b2610}.sub{text-align:center;font-weight:bold;font-size:14px;line-height:1.5;color:#f0dfc0}
+.heroBox{margin-top:7px;background:#493323;border-radius:10px;padding:8px;display:table;width:100%}.heroAvatar,.heroText{display:table-cell;vertical-align:middle}.heroAvatar{width:64px;font-size:44px;text-align:center}.heroName{font-size:17px;font-weight:bold;color:#ffe27a}.heroDesc{font-size:13px;color:#f3e4c8;line-height:1.4}
+.status{display:table;width:100%;table-layout:fixed;border-spacing:5px;margin-top:6px}.box{display:table-cell;background:#493323;border-radius:8px;padding:6px;text-align:center;font-size:11px;font-weight:bold}.num{display:block;font-size:18px;color:#ffe27a;margin-top:2px}
+.mapBox{position:relative;height:500px;background:#b7dff0;border:4px solid #6c7b4b;border-radius:14px;overflow:hidden;margin-top:8px}.landHint{position:absolute;left:7%;top:8%;width:82%;height:82%;border:6px solid rgba(79,110,62,.20);border-radius:46% 36% 42% 45%;transform:rotate(-20deg);-webkit-transform:rotate(-20deg)}
+.castle{position:absolute;width:34px;height:30px;margin-left:-17px;margin-top:-15px;border-radius:8px;background:#efe3c3;border:2px solid #7a5b2d;text-align:center;line-height:26px;color:#3a2c1c;font-size:10px;font-weight:bold;box-shadow:0 2px 3px #0003}.castle.done{background:#f7d14e;border-color:#9a7018}.castle.target{background:#d64535;color:#fff;border-color:#7d1f16;animation:pulse .8s infinite alternate}.castle.choice{outline:4px solid #2f7fd1}.castle.correct{background:#4f9d56;color:#fff}@keyframes pulse{from{transform:scale(1)}to{transform:scale(1.18)}}
+.legend{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.86);color:#3a2c1c;border-radius:8px;padding:5px 7px;font-size:11px;font-weight:bold}
+.encounter{margin-top:8px;background:#3a2a1d;border:2px solid #6c5034;border-radius:11px;padding:8px;display:table;width:100%}.portrait,.encText{display:table-cell;vertical-align:middle}.portrait{width:82px;text-align:center}.encName{font-size:18px;font-weight:bold;color:#ffe27a}.encFact{font-size:13px;line-height:1.45;color:#f3e4c8}
+#portraitCanvas{width:72px;height:72px;image-rendering:pixelated;border:2px solid #8f6c3f;border-radius:8px;background:#18202a}
+.question{margin-top:8px;background:#f2dfad;color:#3b2a12;border:3px solid #a77b36;border-radius:10px;padding:9px;text-align:center}.mode{font-size:13px;font-weight:bold;color:#754d1c}.qtext{font-size:26px;font-weight:bold;line-height:1.35;margin-top:2px}.hint{font-size:14px;margin-top:4px}
+.answers{display:table;width:100%;table-layout:fixed;border-spacing:6px;margin-top:7px}.answerRow{display:table-row}.answerCell{display:table-cell;width:50%;padding:3px}.answer{width:100%;border:0;border-radius:10px;padding:12px 4px;background:#8b1e1e;color:#fff;font-size:18px;font-weight:bold;box-shadow:0 4px 0 #4a0f0f}.answer:active{position:relative;top:2px;box-shadow:0 2px 0 #4a0f0f}
+.msg{min-height:58px;background:#3a2a1d;border:2px solid #6c5034;border-radius:9px;margin-top:7px;padding:8px;text-align:center;font-size:16px;font-weight:bold;line-height:1.45}.regionBar{margin-top:7px;background:#493323;border-radius:8px;padding:7px;text-align:center;font-size:13px;font-weight:bold}
+.actions{display:table;width:100%;table-layout:fixed;border-spacing:5px;margin-top:6px}.acell{display:table-cell}.small{width:100%;border:0;border-radius:8px;padding:8px 3px;background:#6b5a49;color:#fff;font-size:12px;font-weight:bold}#bgm.on{background:#477a4f}
+.overlay{display:none;position:fixed;inset:0;background:rgba(28,16,8,.96);z-index:100;overflow:auto}.obox{width:88%;max-width:460px;background:#2d1d13;border:3px solid #a47a3e;border-radius:14px;padding:18px;text-align:center;margin:50px auto}.big{font-size:72px}.obox h2{font-size:27px;color:#ffe27a;margin:5px}.obox p{font-size:18px;line-height:1.6;font-weight:bold}.primary{width:100%;border:0;border-radius:10px;padding:13px;background:#9b2424;color:#fff;font-size:18px;font-weight:bold;margin-top:7px}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90}.spark{position:absolute;width:8px;height:12px}
+@media(max-width:520px){.mapBox{height:420px}.castle{width:29px;height:26px;margin-left:-14px;margin-top:-13px;line-height:22px;font-size:9px}.qtext{font-size:23px}.answer{font-size:16px;padding:11px 3px}h1{font-size:23px}.wrap{padding:4px}}
+</style>
+</head>
+<body>
+<div id="fx"></div>
+<div class="wrap"><div class="panel">
+<h1>🏯 戦国47 天下統一・偉人編</h1>
+<div class="sub">架空の若武者が 日本全国をめぐり、各地ゆかりの歴史人物と出会いながら<br><b>都道府県の名前・場所・地方</b>を覚えるオリジナル学習RPGです。</div>
+
+<div class="heroBox">
+ <div class="heroAvatar">⚔️</div>
+ <div class="heroText"><div class="heroName">主人公：星川 蒼真（ほしかわ そうま）</div><div class="heroDesc">天下の地理を知るため旅に出た架空の若武者。47の城をめぐり、日本地図の完成を目指す。</div></div>
+</div>
+
+<div class="status">
+ <div class="box">せいは<span id="cleared" class="num">0/47</span></div>
+ <div class="box">れんぞく<span id="combo" class="num">0</span></div>
+ <div class="box">スコア<span id="score" class="num">0</span></div>
+</div>
+
+<div id="mapBox" class="mapBox">
+ <div class="landHint"></div>
+ <div class="legend">🟨 せいは　🟥 こうりゃく中　🔵 場所をえらぶ</div>
+</div>
+
+<div class="encounter">
+ <div class="portrait"><canvas id="portraitCanvas" width="72" height="72"></canvas></div>
+ <div class="encText"><div id="encName" class="encName"></div><div id="encFact" class="encFact"></div></div>
+</div>
+
+<div class="question">
+ <div id="mode" class="mode"></div>
+ <div id="qtext" class="qtext"></div>
+ <div id="hint" class="hint"></div>
+</div>
+
+<div id="answers" class="answers"></div>
+<div id="msg" class="msg">星川蒼真と 47の城をめぐろう！</div>
+<div id="regionBar" class="regionBar"></div>
+
+<div class="actions">
+ <div class="acell"><button id="restart" class="small">🔄 はじめから</button></div>
+ <div class="acell"><button id="sound" class="small">🔊 SE ON</button></div>
+ <div class="acell"><button id="bgm" class="small">🎵 BGM OFF</button></div>
+</div>
+</div></div>
+
+<div id="clear" class="overlay"><div class="obox"><div class="big">🏯✨</div><h2>城を せいは！</h2><p id="clearText"></p><button id="next" class="primary">つぎの 城へ</button></div></div>
+<div id="allclear" class="overlay"><div class="obox"><div class="big">👑🗾</div><h2>天下統一！</h2><p>47都道府県を ぜんぶ せいは！<br>星川蒼真の 日本地図が 完成した！</p><button id="again" class="primary">もういちど</button></div></div>
+
+<script>
+(function(){
+"use strict";
+var PREFS=[{"name": "北海道", "kana": "ほっかいどう", "region": "北海道", "x": 82, "y": 8, "hero": "松浦武四郎", "fact": "北海道を歩いて調べ、「北海道」の名づけに関わった探検家。", "type": "explorer"}, {"name": "青森県", "kana": "あおもりけん", "region": "東北", "x": 73, "y": 20, "hero": "棟方志功", "fact": "青森市に生まれ、世界的に知られた版画家。", "type": "artist"}, {"name": "岩手県", "kana": "いわてけん", "region": "東北", "x": 76, "y": 27, "hero": "宮沢賢治", "fact": "花巻に生まれた詩人・童話作家。", "type": "writer"}, {"name": "宮城県", "kana": "みやぎけん", "region": "東北", "x": 73, "y": 33, "hero": "伊達政宗", "fact": "仙台の城下町を築いた戦国武将。", "type": "warlord"}, {"name": "秋田県", "kana": "あきたけん", "region": "東北", "x": 68, "y": 27, "hero": "小野小町", "fact": "秋田県湯沢市周辺に伝承が残る平安時代の歌人。", "type": "poet"}, {"name": "山形県", "kana": "やまがたけん", "region": "東北", "x": 67, "y": 34, "hero": "上杉鷹山", "fact": "米沢藩の立て直しで知られる江戸時代の大名。", "type": "lord"}, {"name": "福島県", "kana": "ふくしまけん", "region": "東北", "x": 68, "y": 40, "hero": "野口英世", "fact": "猪苗代に生まれた細菌学者。", "type": "scholar"}, {"name": "茨城県", "kana": "いばらきけん", "region": "関東", "x": 69, "y": 49, "hero": "徳川光圀", "fact": "水戸藩主として知られ、『大日本史』編さんを進めた。", "type": "lord"}, {"name": "栃木県", "kana": "とちぎけん", "region": "関東", "x": 65, "y": 47, "hero": "田中正造", "fact": "佐野に生まれ、足尾鉱毒問題に取り組んだ人物。", "type": "scholar"}, {"name": "群馬県", "kana": "ぐんまけん", "region": "関東", "x": 61, "y": 47, "hero": "高山彦九郎", "fact": "太田に生まれ、江戸時代後期に各地を旅した思想家。", "type": "scholar"}, {"name": "埼玉県", "kana": "さいたまけん", "region": "関東", "x": 63, "y": 52, "hero": "渋沢栄一", "fact": "深谷に生まれ、多くの会社や社会事業の設立に関わった。", "type": "merchant"}, {"name": "千葉県", "kana": "ちばけん", "region": "関東", "x": 69, "y": 55, "hero": "伊能忠敬", "fact": "佐原で商いを営み、日本地図作りで知られる測量家。", "type": "explorer"}, {"name": "東京都", "kana": "とうきょうと", "region": "関東", "x": 63, "y": 56, "hero": "勝海舟", "fact": "江戸に生まれ、幕末から明治に活躍した人物。", "type": "samurai"}, {"name": "神奈川県", "kana": "かながわけん", "region": "関東", "x": 61, "y": 59, "hero": "二宮尊徳", "fact": "小田原に生まれ、農村の復興に力を尽くした。", "type": "scholar"}, {"name": "新潟県", "kana": "にいがたけん", "region": "中部", "x": 59, "y": 39, "hero": "上杉謙信", "fact": "越後を治め、春日山城を本拠とした戦国武将。", "type": "warlord"}, {"name": "富山県", "kana": "とやまけん", "region": "中部", "x": 51, "y": 45, "hero": "佐々成政", "fact": "富山城を拠点に越中を治めた戦国武将。", "type": "warlord"}, {"name": "石川県", "kana": "いしかわけん", "region": "中部", "x": 47, "y": 45, "hero": "前田利家", "fact": "加賀前田家の基礎を築いた戦国武将。", "type": "warlord"}, {"name": "福井県", "kana": "ふくいけん", "region": "中部", "x": 44, "y": 49, "hero": "柴田勝家", "fact": "北ノ庄城を拠点とした戦国武将。", "type": "warlord"}, {"name": "山梨県", "kana": "やまなしけん", "region": "中部", "x": 57, "y": 53, "hero": "武田信玄", "fact": "甲斐を治めた戦国大名。", "type": "warlord"}, {"name": "長野県", "kana": "ながのけん", "region": "中部", "x": 55, "y": 48, "hero": "真田幸村", "fact": "上田ゆかりの真田氏の武将として知られる。", "type": "warlord"}, {"name": "岐阜県", "kana": "ぎふけん", "region": "中部", "x": 49, "y": 52, "hero": "織田信長", "fact": "岐阜城を拠点に天下統一を目指した戦国武将。", "type": "warlord"}, {"name": "静岡県", "kana": "しずおかけん", "region": "中部", "x": 56, "y": 59, "hero": "徳川家康", "fact": "駿府を重要な拠点とした江戸幕府初代将軍。", "type": "warlord"}, {"name": "愛知県", "kana": "あいちけん", "region": "中部", "x": 50, "y": 58, "hero": "豊臣秀吉", "fact": "尾張に生まれ、天下統一を進めた戦国武将。", "type": "warlord"}, {"name": "三重県", "kana": "みえけん", "region": "近畿", "x": 46, "y": 60, "hero": "松尾芭蕉", "fact": "伊賀に生まれた俳人。", "type": "poet"}, {"name": "滋賀県", "kana": "しがけん", "region": "近畿", "x": 43, "y": 54, "hero": "石田三成", "fact": "近江に生まれ、佐和山城を居城とした武将。", "type": "samurai"}, {"name": "京都府", "kana": "きょうとふ", "region": "近畿", "x": 40, "y": 53, "hero": "紫式部", "fact": "京都で宮廷生活を送り、『源氏物語』を書いた。", "type": "writer"}, {"name": "大阪府", "kana": "おおさかふ", "region": "近畿", "x": 40, "y": 58, "hero": "千利休", "fact": "堺に生まれ、茶の湯を大成した。", "type": "artist"}, {"name": "兵庫県", "kana": "ひょうごけん", "region": "近畿", "x": 36, "y": 55, "hero": "黒田官兵衛", "fact": "姫路ゆかりの軍師として知られる戦国武将。", "type": "samurai"}, {"name": "奈良県", "kana": "ならけん", "region": "近畿", "x": 43, "y": 59, "hero": "聖徳太子", "fact": "飛鳥地域を舞台に活躍したとされる人物。", "type": "prince"}, {"name": "和歌山県", "kana": "わかやまけん", "region": "近畿", "x": 40, "y": 63, "hero": "南方熊楠", "fact": "和歌山に生まれた博物学者。", "type": "scholar"}, {"name": "鳥取県", "kana": "とっとりけん", "region": "中国", "x": 31, "y": 53, "hero": "水木しげる", "fact": "境港で育ち、妖怪漫画で知られる漫画家。", "type": "artist"}, {"name": "島根県", "kana": "しまねけん", "region": "中国", "x": 26, "y": 53, "hero": "小泉八雲", "fact": "松江で暮らし、日本文化を海外に紹介した作家。", "type": "writer"}, {"name": "岡山県", "kana": "おかやまけん", "region": "中国", "x": 31, "y": 58, "hero": "宮本武蔵", "fact": "美作ゆかりとされる剣豪。", "type": "samurai"}, {"name": "広島県", "kana": "ひろしまけん", "region": "中国", "x": 26, "y": 58, "hero": "毛利元就", "fact": "安芸を基盤に勢力を広げた戦国大名。", "type": "warlord"}, {"name": "山口県", "kana": "やまぐちけん", "region": "中国", "x": 20, "y": 58, "hero": "吉田松陰", "fact": "萩に生まれ、松下村塾で多くの若者を教えた。", "type": "scholar"}, {"name": "徳島県", "kana": "とくしまけん", "region": "四国", "x": 33, "y": 64, "hero": "蜂須賀家政", "fact": "徳島城を築き、阿波徳島藩の基礎を築いた。", "type": "lord"}, {"name": "香川県", "kana": "かがわけん", "region": "四国", "x": 31, "y": 61, "hero": "空海", "fact": "讃岐に生まれた僧で、真言宗を開いた。", "type": "monk"}, {"name": "愛媛県", "kana": "えひめけん", "region": "四国", "x": 26, "y": 65, "hero": "正岡子規", "fact": "松山に生まれ、俳句・短歌の革新で知られる。", "type": "poet"}, {"name": "高知県", "kana": "こうちけん", "region": "四国", "x": 29, "y": 69, "hero": "坂本龍馬", "fact": "土佐に生まれ、幕末に活躍した人物。", "type": "samurai"}, {"name": "福岡県", "kana": "ふくおかけん", "region": "九州・沖縄", "x": 16, "y": 64, "hero": "黒田長政", "fact": "福岡藩初代藩主として福岡城を築いた。", "type": "lord"}, {"name": "佐賀県", "kana": "さがけん", "region": "九州・沖縄", "x": 12, "y": 67, "hero": "鍋島直正", "fact": "佐賀藩で産業や学問の近代化を進めた。", "type": "lord"}, {"name": "長崎県", "kana": "ながさきけん", "region": "九州・沖縄", "x": 8, "y": 68, "hero": "シーボルト", "fact": "長崎の出島で西洋医学や博物学を教えた。", "type": "scholar"}, {"name": "熊本県", "kana": "くまもとけん", "region": "九州・沖縄", "x": 15, "y": 71, "hero": "加藤清正", "fact": "熊本城を築いた戦国武将。", "type": "warlord"}, {"name": "大分県", "kana": "おおいたけん", "region": "九州・沖縄", "x": 19, "y": 69, "hero": "福沢諭吉", "fact": "中津で育ち、学問の普及に尽くした。", "type": "scholar"}, {"name": "宮崎県", "kana": "みやざきけん", "region": "九州・沖縄", "x": 18, "y": 76, "hero": "若山牧水", "fact": "日向に生まれた歌人。", "type": "poet"}, {"name": "鹿児島県", "kana": "かごしまけん", "region": "九州・沖縄", "x": 14, "y": 79, "hero": "西郷隆盛", "fact": "薩摩に生まれ、幕末から明治初期に活躍した。", "type": "samurai"}, {"name": "沖縄県", "kana": "おきなわけん", "region": "九州・沖縄", "x": 6, "y": 88, "hero": "尚巴志", "fact": "琉球を統一し、第一尚氏王統を開いたとされる王。", "type": "king"}],STORAGE="sengoku47_people_oldipad_v2";
+var order=[],idx=0,cleared=[],score=0,combo=0,current=null,mode=0,locked=false,soundOn=true;
+var audioCtx=null,bgmOn=false,bgmTimer=null,bgmStep=0;
+function $(id){return document.getElementById(id)}
+function shuffle(a){var i,j,t;for(i=a.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=a[i];a[i]=a[j];a[j]=t}return a}
+function newOrder(){order=[];for(var i=0;i<PREFS.length;i++)order.push(i);shuffle(order)}
+function save(){try{localStorage.setItem(STORAGE,JSON.stringify({order:order,idx:idx,cleared:cleared,score:score}))}catch(e){}}
+function load(){try{var s=JSON.parse(localStorage.getItem(STORAGE)||"null");if(s&&s.order&&s.order.length===47){order=s.order;idx=s.idx||0;cleared=s.cleared||[];score=s.score||0;return}}catch(e){}newOrder()}
+function abbr(name){return name.replace("県","").replace("府","").replace("都","").replace("北海道","北")}
+function renderMap(){
+ var mb=$("mapBox"),old=mb.getElementsByClassName("castle"),i,p,d;
+ while(old.length)old[0].parentNode.removeChild(old[0]);
+ for(i=0;i<PREFS.length;i++){p=PREFS[i];d=document.createElement("div");d.className="castle";if(cleared.indexOf(i)>=0)d.className+=" done";if(current&&i===current.index)d.className+=" target";d.style.left=p.x+"%";d.style.top=p.y+"%";d.setAttribute("data-i",String(i));d.innerHTML=abbr(p.name);mb.appendChild(d)}
+}
+function regionCount(region){var total=0,done=0,i;for(i=0;i<PREFS.length;i++)if(PREFS[i].region===region){total++;if(cleared.indexOf(i)>=0)done++}return done+"/"+total}
+function render(){
+ $("cleared").innerHTML=cleared.length+"/47";$("combo").innerHTML=String(combo);$("score").innerHTML=String(score);renderMap();
+ if(current){$("regionBar").innerHTML="📍 "+current.region+"　せいは "+regionCount(current.region);$("encName").innerHTML=current.name+"の ゆかりの人物： "+current.hero;$("encFact").innerHTML=current.fact;drawPortrait(current.type)}
+ $("bgm").innerHTML=bgmOn?"🎵 BGM ON":"🎵 BGM OFF";$("bgm").className=bgmOn?"small on":"small";$("sound").innerHTML=soundOn?"🔊 SE ON":"🔇 SE OFF";
+}
+function startQuestion(){
+ if(idx>=order.length){$("allclear").style.display="block";fireworks(220);playWin();return}
+ current=PREFS[order[idx]];current.index=order[idx];mode=idx%2;locked=false;render();if(mode===0)nameFromPlace();else placeFromName();
+}
+function nameFromPlace(){
+ $("mode").innerHTML="① 赤い城の 都道府県名(とどうふけんめい)は？";$("qtext").innerHTML="🟥 地図の場所を見て 名前をえらぼう";$("hint").innerHTML="ちほう： "+current.region;
+ var vals=[current.name],pool=[],i,v;for(i=0;i<PREFS.length;i++)if(PREFS[i].region===current.region&&PREFS[i].name!==current.name)pool.push(PREFS[i].name);
+ while(vals.length<4){v=pool.length?pool[Math.floor(Math.random()*pool.length)]:PREFS[Math.floor(Math.random()*PREFS.length)].name;if(vals.indexOf(v)<0)vals.push(v)}
+ shuffle(vals);makeAnswerButtons(vals,current.name);
+}
+function placeFromName(){
+ $("mode").innerHTML="② 都道府県名から 場所をさがそう";$("qtext").innerHTML=current.name+"（"+current.kana+"）は どこ？";$("hint").innerHTML=current.hero+"の ゆかりの地。青くかこまれた4つの城からえらぼう";$("answers").innerHTML="";
+ var choices=[current.index],pool=[],i,v;for(i=0;i<PREFS.length;i++)if(PREFS[i].region===current.region&&i!==current.index)pool.push(i);
+ while(choices.length<4){v=pool.length?pool[Math.floor(Math.random()*pool.length)]:Math.floor(Math.random()*PREFS.length);if(choices.indexOf(v)<0)choices.push(v)}
+ shuffle(choices);var castles=document.getElementsByClassName("castle");
+ for(i=0;i<castles.length;i++){var ci=parseInt(castles[i].getAttribute("data-i"),10);if(choices.indexOf(ci)>=0){castles[i].className+=" choice";castles[i].onclick=(function(ii){return function(){choosePlace(ii)}})(ci)}}
+}
+function makeAnswerButtons(vals,correct){
+ var html='<div class="answerRow">',i;for(i=0;i<2;i++)html+='<div class="answerCell"><button class="answer" data-v="'+vals[i]+'">'+vals[i]+'</button></div>';
+ html+='</div><div class="answerRow">';for(i=2;i<4;i++)html+='<div class="answerCell"><button class="answer" data-v="'+vals[i]+'">'+vals[i]+'</button></div></div>';$("answers").innerHTML=html;
+ var bs=document.getElementsByClassName("answer");for(i=0;i<bs.length;i++)bs[i].onclick=function(){chooseName(this.getAttribute("data-v"),correct,this)};
+}
+function chooseName(v,correct,btn){if(locked)return;locked=true;if(v===correct){btn.style.background="#3f8f49";success()}else{btn.style.background="#777";combo=0;$("msg").innerHTML="おしい！ せいかいは「"+correct+"」<br>"+current.hero+"の ゆかりの地として いっしょに おぼえよう。";playMiss();setTimeout(function(){locked=false;nameFromPlace()},1200)}}
+function choosePlace(i){if(locked)return;locked=true;if(i===current.index){success()}else{combo=0;$("msg").innerHTML="おしい！ "+current.name+"は 赤い城の場所だよ。<br>"+current.hero+"と いっしょに 場所をおぼえよう。";playMiss();setTimeout(function(){locked=false;render();placeFromName()},1200)}}
+function success(){
+ combo++;score+=100+combo*10;if(cleared.indexOf(current.index)<0)cleared.push(current.index);render();fireworks(35);playHit();
+ $("clearText").innerHTML=current.name+"（"+current.kana+"）を せいは！<br><b>"+current.hero+"</b><br>"+current.fact+"<br><br>"+current.region+"地方　"+cleared.length+" / 47 せいは！";
+ $("clear").style.display="block";save();
+}
+function nextQ(){$("clear").style.display="none";idx++;startQuestion();save()}
+
+/* simple original pixel portraits by role, not likenesses */
+function px(c,x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h)}
+function drawPortrait(type){
+ var cv=$("portraitCanvas"),c=cv.getContext("2d");c.clearRect(0,0,72,72);c.imageSmoothingEnabled=false;
+ var skin="#e2b184",hair="#2b211b",robe="#355a7a",acc="#d4a72c";
+ px(c,20,10,32,30,skin);px(c,18,8,36,10,hair);px(c,22,3,28,8,hair);px(c,25,22,5,4,"#111");px(c,43,22,5,4,"#111");px(c,31,33,11,3,"#7a3d2a");
+ if(type==="warlord"||type==="samurai"||type==="lord"){robe=type==="warlord"?"#8b1e1e":"#34495e";px(c,14,40,44,27,robe);px(c,17,4,38,6,acc);px(c,22,0,7,7,acc);px(c,44,0,7,7,acc);px(c,9,42,8,22,robe);px(c,57,42,8,22,robe)}
+ else if(type==="scholar"||type==="writer"||type==="poet"){robe="#425b73";px(c,14,40,44,27,robe);px(c,15,8,42,4,"#111");px(c,10,44,12,4,"#d8c8a4");px(c,52,44,12,4,"#d8c8a4")}
+ else if(type==="artist"){robe="#6b4f7d";px(c,14,40,44,27,robe);px(c,58,35,4,27,"#c9a56c");px(c,62,35,4,12,"#333")}
+ else if(type==="explorer"){robe="#506f4e";px(c,14,40,44,27,robe);px(c,14,8,44,6,"#8b6b35");px(c,55,42,5,24,"#8b6b35")}
+ else if(type==="merchant"){robe="#7a5b2d";px(c,14,40,44,27,robe);px(c,13,9,46,5,"#333")}
+ else if(type==="monk"){robe="#8a6a31";px(c,14,40,44,27,robe);px(c,22,5,28,6,"#d9b36c");px(c,60,38,3,28,"#8b5a2b")}
+ else if(type==="king"||type==="prince"){robe="#6e3b7c";px(c,14,40,44,27,robe);px(c,18,3,36,7,"#e3bc38");px(c,25,0,5,6,"#e3bc38");px(c,42,0,5,6,"#e3bc38")}
+ else{px(c,14,40,44,27,robe)}
+}
+/* audio */
+function getAudio(){if(audioCtx)return audioCtx;var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;try{audioCtx=new AC()}catch(e){audioCtx=null}return audioCtx}
+function unlockAudio(){var a=getAudio();if(!a)return;try{if(a.state==="suspended"&&a.resume)a.resume();var b=a.createBuffer(1,1,22050),s=a.createBufferSource();s.buffer=b;s.connect(a.destination);s.start(0)}catch(e){}}
+function tone(f,st,d,v,t){var a=getAudio(),o,g;if(!a)return;try{o=a.createOscillator();g=a.createGain();o.type=t||"square";o.frequency.value=f;g.gain.setValueAtTime(v,st);g.gain.exponentialRampToValueAtTime(.0001,st+d);o.connect(g);g.connect(a.destination);o.start(st);o.stop(st+d+.02)}catch(e){}}
+function playHit(){if(!soundOn)return;var a=getAudio();if(a){tone(650,a.currentTime,.08,.045,"square");tone(980,a.currentTime+.08,.1,.04,"square")}}
+function playMiss(){if(!soundOn)return;var a=getAudio();if(a)tone(150,a.currentTime,.15,.05,"sawtooth")}
+function playWin(){if(!soundOn)return;var a=getAudio(),N=[523,659,784,1046],i;if(a)for(i=0;i<N.length;i++)tone(N[i],a.currentTime+i*.1,.18,.05,"square")}
+function bgmTick(){var a=getAudio(),m=[220,261.63,293.66,329.63,293.66,261.63,246.94,220,196,246.94,293.66,392,329.63,293.66,261.63,246.94],b=[110,110,123.47,123.47,146.83,146.83,123.47,123.47],now;if(!a||!bgmOn)return;now=a.currentTime+.03;tone(m[bgmStep%m.length],now,.18,.016,"square");if(bgmStep%2===0)tone(b[Math.floor(bgmStep/2)%b.length],now,.32,.01,"triangle");bgmStep++}
+function startBgm(){unlockAudio();bgmOn=true;if(bgmTimer)clearInterval(bgmTimer);bgmStep=0;bgmTick();bgmTimer=setInterval(bgmTick,270);render()}
+function stopBgm(){bgmOn=false;if(bgmTimer){clearInterval(bgmTimer);bgmTimer=null}render()}
+function toggleBgm(){if(bgmOn)stopBgm();else startBgm()}
+function fireworks(n){var fx=$("fx"),cx=window.innerWidth/2,cy=window.innerHeight*.25,C=["#f66","#fd4","#5b7","#48e","#a6e"],i,e;for(i=0;i<n;i++){e=document.createElement("div");e.className="spark";e.style.background=C[i%5];e.style.left=cx+"px";e.style.top=cy+"px";fx.appendChild(e);(function(el,dx,dy,born){var tm=setInterval(function(){var t=((new Date()).getTime()-born)/900;if(t>=1){clearInterval(tm);if(el.parentNode)el.parentNode.removeChild(el);return}el.style.left=(cx+dx*t)+"px";el.style.top=(cy+dy*t)+"px";el.style.opacity=String(1-t)},30)})(e,Math.random()*600-300,80+Math.random()*400,(new Date()).getTime())}}
+
+$("next").onclick=nextQ;$("again").onclick=function(){newOrder();idx=0;cleared=[];score=0;combo=0;$("allclear").style.display="none";startQuestion();save()};
+$("restart").onclick=function(){unlockAudio();if(confirm("さいしょから やりなおしますか？")){newOrder();idx=0;cleared=[];score=0;combo=0;startQuestion();save()}};
+$("sound").onclick=function(){unlockAudio();soundOn=!soundOn;render()};$("bgm").onclick=function(){unlockAudio();toggleBgm()};
+load();startQuestion();
+})();
+</script>
+</body>
+</html>
